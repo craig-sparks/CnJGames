@@ -1,0 +1,71 @@
+<html>
+<head>
+    <title>Play High or Low!</title>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="assets/high_low.js"></script>
+    <script>
+        const OVER = 'OVER';
+        const UNDER = 'UNDER';
+        const DRAW = 'DRAW';
+        var previous_roll = null;
+        var current_prediction = null;
+
+        function show_dialog() {
+            $('#high-or-low').css('display', 'block');
+        }
+
+        function hide_dialog() {
+            $('#high-or-low').css('display', 'none');
+        }
+
+        function update_roll_text(num) {
+            $('#current-roll-text').text(num);
+        }
+
+        function do_roll() {
+            var current_roll = roll_dice();
+            show_dialog();
+
+            if(previous_roll != null) {
+                if ((current_roll > previous_roll) && current_prediction == OVER) {
+                    winner(previous_roll, current_roll);
+                } else if ((current_roll < previous_roll) && current_prediction == UNDER) {
+                    winner(previous_roll, current_roll);
+                } else if (current_roll == previous_roll) {
+                    draw(previous_roll, current_roll);
+                } else {
+                    loser(previous_roll, current_roll);
+                }
+            }
+
+            previous_roll = current_roll;
+        }
+
+        $(document).ready(function(){
+            $('#roll-dice').on('click', function() {
+                do_roll();
+            });
+
+            $('#pick-high').on('click', function() {
+                current_prediction = OVER;
+                do_roll();
+
+            });
+
+            $('#pick-low').on('click', function() {
+                current_prediction = UNDER;
+                do_roll();
+            });
+        });
+    </script>
+</head>
+<body>
+<button id="roll-dice" class="roll-dice">Roll Dice</button>
+<div>Current Roll: <span id="current-roll-text">NO ROLL</span></div>
+<div id="high-or-low" style="display: none; border: 1px solid #000">
+    <p>Pick High or Low</p>
+    <button id="pick-high">High</button>
+    <button id="pick-low">Low</button>
+</div>
+</body>
+</html>
